@@ -1,10 +1,15 @@
-import React from 'react'
+import React from 'react';
+import axios from 'axios';
 
 // Suggested initial states
 const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
+
+const URL = "http://localhost:9000/api/result";
+let x = 0;
+let y = 0;
 
 const initialState = {
   message: initialMessage,
@@ -24,12 +29,12 @@ export default class AppClass extends React.Component {
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    let x = 0;
-    let y = 0;
+    
     if (this.state.index < 3) {
       x = this.state.index + 1;
       y = 1;
       return `(${x}, ${y})`;
+      
     }
     if (this.state.index >= 3 && this.state.index < 6) {
       x = this.state.index - 2;
@@ -41,29 +46,13 @@ export default class AppClass extends React.Component {
       y = 3;
       return `(${x}, ${y})`;
     }
-    // else if (this.state.index === 3)
-    //   return "(1, 2)";
-    // else if (this.state.index === 4)
-    //   return "(2, 2)";
-    // else if (this.state.index === 5)
-    //   return "(3, 2)";
-    // else if (this.state.index === 6) {
-
-    //   return "(1, 3)";
-    // }
-    // else if (this.state.index === 7) {
-    //   return "(2, 3)";
-    // }
-    // else if (this.state.index === 8) {
-    //   return "(3, 3)";
-    // }
   }
 
   getXYMessage = () => {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
-    const coordinates = this.getXY();
+    const coordinates  = this.getXY();
     return `Coordinates ${coordinates}`;
   }
   
@@ -81,6 +70,9 @@ export default class AppClass extends React.Component {
       this.setState({...this.state, index: this.state.index - 1, steps: this.state.steps + 1, message: "" })
     }
     else if (direction === "left" && this.state.index < 6 && this.state.index > 3) {
+      this.setState({...this.state, index: this.state.index - 1, steps: this.state.steps + 1, message: "" })
+    }
+    else if (direction === "left" && this.state.index > 6) {
       this.setState({...this.state, index: this.state.index - 1, steps: this.state.steps + 1, message: "" })
     }
     else if (direction === "left" && this.state.index <= 0) {
@@ -101,17 +93,15 @@ export default class AppClass extends React.Component {
     else if (direction === "right" && this.state.index < 2) {
       this.setState({...this.state, index: this.state.index + 1, steps: this.state.steps + 1, message: "" })
     }
-
-      else if (direction === "right" && this.state.index >= 8) {
+    else if (direction === "right" && this.state.index >= 8) {
       this.setState({...this.state, message: "You can't go right"})
-      }
-      else if (direction === "right" && this.state.index === 5) {
-        this.setState({...this.state, message: "You can't go right"})
-      }
-      else if (direction === "right" && this.state.index === 2) {
-          this.setState({...this.state, message: "You can't go right"})
-      }
-    
+    }
+    else if (direction === "right" && this.state.index === 5) {
+      this.setState({...this.state, message: "You can't go right"})
+    }
+    else if (direction === "right" && this.state.index === 2) {
+      this.setState({...this.state, message: "You can't go right"})
+    }
     else if (direction === "up" && this.state.index > 2) {
       this.setState({...this.state, index: this.state.index - 3, steps: this.state.steps + 1, message: "" })
     }
@@ -140,7 +130,22 @@ export default class AppClass extends React.Component {
   }
 
   onSubmit = (evt) => {
-    // Use a POST request to send a payload to the server.
+  // Use a POST request to send a payload to the server.
+  //- The endpoint expects a payload like `{ "x": 1, "y": 2, "steps": 3, "email": "lady@gaga.com" }`:
+  // - `x` should be an integer between 1 and 3.
+  // - `y` should be an integer between 1 and 3.
+  // - `steps` should be an integer larger than 0.
+  // - `email` should be a valid email address.
+    evt.preventDefault();
+    // this.getXY();
+    axios.post(URL, { x: this.x, y: this.y, steps: this.state.steps, email: this.state.email })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    this.setState(initialState);
   }
 
   render() {
@@ -170,7 +175,7 @@ export default class AppClass extends React.Component {
           <button id="down" onClick={this.move}>DOWN</button>
           <button id="reset" onClick={this.reset}>reset</button>
         </div>
-        <form>
+        <form onSubmit={this.onSubmit}>
           <input id="email" type="email" placeholder="type email" onChange={this.onChange} value={this.state.email}></input>
           <input id="submit" type="submit"></input>
         </form>
