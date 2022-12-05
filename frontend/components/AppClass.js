@@ -16,6 +16,8 @@ const initialState = {
   email: initialEmail,
   index: initialIndex,
   steps: initialSteps,
+  error: '',
+  success: ''
 }
 
 export default class AppClass extends React.Component {
@@ -142,9 +144,11 @@ export default class AppClass extends React.Component {
     .then((res) => {
       console.log(res.data);
       this.reset();
+      this.setState({...this.state, success: res.data.message});
     })
     .catch((err) => {
       console.log(err);
+      this.setState({...this.state, error: err.response.data.message})
     })
   }
 
@@ -167,6 +171,7 @@ export default class AppClass extends React.Component {
         </div>
         <div className="info">
           <h3 id="message">{this.state.message}</h3>
+          <h3 id="error-message">{this.state.error || this.state.success}</h3>
         </div>
         <div id="keypad">
           <button id="left" onClick={this.move}>LEFT</button>

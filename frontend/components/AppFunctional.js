@@ -22,6 +22,8 @@ export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
   const [data, setData] = useState(initialState);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
@@ -163,10 +165,13 @@ export default function AppFunctional(props) {
       axios.post(URL, { x: x, y: y, steps: data.steps, email: data.email })
         .then((res) => {
           console.log(res.data);
+          setSuccess(res.data.message);
           setData(initialState);
+          setError("");
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.response.data.message);
+          setError(err.response.data.message);
         })
     // })
   };
@@ -188,6 +193,7 @@ export default function AppFunctional(props) {
       </div>
       <div className="info">
         <h3 id="message">{data.message}</h3>
+        <h3 id="error-message">{error || success}</h3>
       </div>
       <div id="keypad">
         <button id="left" onClick={move}>LEFT</button>
