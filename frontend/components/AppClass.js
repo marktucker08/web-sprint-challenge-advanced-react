@@ -138,14 +138,14 @@ export default class AppClass extends React.Component {
   // - `email` should be a valid email address.
     evt.preventDefault();
     // this.getXY();
-    axios.post(URL, { x: this.x, y: this.y, steps: this.state.steps, email: this.state.email })
+    axios.post(URL, { x: x, y: y, steps: this.state.steps, email: this.state.email })
     .then((res) => {
       console.log(res.data);
+      this.reset();
     })
     .catch((err) => {
       console.log(err);
     })
-    this.setState(initialState);
   }
 
   render() {
