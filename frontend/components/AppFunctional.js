@@ -147,7 +147,7 @@ export default function AppFunctional(props) {
   function move(evt) {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
-    console.log(data.index);
+    // console.log(data.index);
     getNextIndex(evt.target.id);
   }
 
@@ -166,7 +166,7 @@ export default function AppFunctional(props) {
         .then((res) => {
           console.log(res.data);
           setSuccess(res.data.message);
-          setData(initialState);
+          setData({...data, email: initialEmail});
           setError("");
         })
         .catch((err) => {
@@ -180,7 +180,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {data.steps} times</h3>
+        <h3 id="steps">{data.steps === 1 ? `You moved ${data.steps} time` : `You moved ${data.steps} times`}</h3>
       </div>
       <div id="grid">
         {

@@ -10,6 +10,7 @@ const initialIndex = 4 // the index the "B" is at
 const URL = "http://localhost:9000/api/result";
 let x = 0;
 let y = 0;
+let success = '';
 
 const initialState = {
   message: initialMessage,
@@ -17,7 +18,6 @@ const initialState = {
   index: initialIndex,
   steps: initialSteps,
   error: '',
-  success: ''
 }
 
 export default class AppClass extends React.Component {
@@ -55,7 +55,7 @@ export default class AppClass extends React.Component {
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
     const coordinates  = this.getXY();
-    return `Coordinates ${coordinates}`;
+    return coordinates;
   }
   
 
@@ -121,7 +121,7 @@ export default class AppClass extends React.Component {
   move = (evt) => {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
-    console.log(this.state.index);
+    // console.log(this.state.index);
     this.getNextIndex(evt.target.id);
   }
 
@@ -143,9 +143,10 @@ export default class AppClass extends React.Component {
     axios.post(URL, { x: x, y: y, steps: this.state.steps, email: this.state.email })
     .then((res) => {
       console.log(res.data);
-      this.reset();
-      this.setState({...this.state, success: res.data.message});
+      success = res.data.message;
+      this.setState({...this.state, email: initialEmail});
     })
+
     .catch((err) => {
       console.log(err);
       this.setState({...this.state, error: err.response.data.message})
@@ -157,8 +158,8 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">{this.getXYMessage()}</h3>
-          <h3 id="steps">You moved {this.state.steps} times</h3>
+          <h3 id="coordinates">Coordinates {this.getXYMessage()}</h3>
+          <h3 id="steps">{this.state.steps === 1 ? `You moved ${this.state.steps} time` : `You moved ${this.state.steps} times`}</h3>
         </div>
         <div id="grid">
           {
@@ -171,7 +172,7 @@ export default class AppClass extends React.Component {
         </div>
         <div className="info">
           <h3 id="message">{this.state.message}</h3>
-          <h3 id="error-message">{this.state.error || this.state.success}</h3>
+          <h3 id="error-message">{this.state.error || success}</h3>
         </div>
         <div id="keypad">
           <button id="left" onClick={this.move}>LEFT</button>
