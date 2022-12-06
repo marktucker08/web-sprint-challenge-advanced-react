@@ -25,25 +25,25 @@ export default function AppFunctional(props) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  function getXY() {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
-    if (data.index < 3) {
-      x = data.index + 1;
-      y = 1;
-      return (x, y);
-    }
-    if (data.index >= 3 && data.index < 6) {
-      x = data.index - 2;
-      y = 2;
-      return (x, y);
-    }
-    if (data.index >= 6) {
-      x = data.index - 5;
-      y = 3;
-      return (x, y);
-    }
-  }
+  // function getXY() {
+  //   // It it not necessary to have a state to track the coordinates.
+  //   // It's enough to know what index the "B" is at, to be able to calculate them.
+  //   if (data.index < 3) {
+  //     x = data.index + 1;
+  //     y = 1;
+  //     return (x, y);
+  //   }
+  //   if (data.index >= 3 && data.index < 6) {
+  //     x = data.index - 2;
+  //     y = 2;
+  //     return (x, y);
+  //   }
+  //   if (data.index >= 6) {
+  //     x = data.index - 5;
+  //     y = 3;
+  //     return (x, y);
+  //   }
+  // }
 
   function getX() {
     if (data.index < 3) {
@@ -160,8 +160,7 @@ export default function AppFunctional(props) {
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
-    // this.getXY();
-    // useEffect(() => {
+
       axios.post(URL, { x: x, y: y, steps: data.steps, email: data.email })
         .then((res) => {
           console.log(res.data);
@@ -173,7 +172,6 @@ export default function AppFunctional(props) {
           console.log(err.response.data.message);
           setError(err.response.data.message);
         })
-    // })
   };
 
   return (
